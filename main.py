@@ -1,15 +1,16 @@
 import sqlite3
 import sys
 
-from PyQt5 import uic
+from templates.main import Ui_Form
+from templates.addEditCoffeeForm import Ui_Dialog
 from PyQt5.QtWidgets import QApplication, QWidget, QHeaderView, QTableWidgetItem, QDialog
 
 
-class Add(QDialog):
+class Add(QDialog, Ui_Dialog):
     def __init__(self):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
-        self.con = sqlite3.connect("coffee.sqlite")
+        self.setupUi(self)
+        self.con = sqlite3.connect("data/coffee.sqlite")
         self.setWindowTitle('Эспрессо')
 
         self.goBtn.clicked.connect(self.add)
@@ -31,11 +32,11 @@ class Add(QDialog):
         self.accept()
 
 
-class Update(QDialog):
+class Update(QDialog, Ui_Dialog):
     def __init__(self, current, output):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
-        self.con = sqlite3.connect("coffee.sqlite")
+        self.setupUi(self)
+        self.con = sqlite3.connect("data/coffee.sqlite")
         self.setWindowTitle('Эспрессо')
         self.output = output
         self.current = current
@@ -50,7 +51,6 @@ class Update(QDialog):
         self.idd = self.output.item(obj.row(), 0).text()
 
         result = cur.execute(f"SELECT * FROM coffee WHERE id = {self.idd}").fetchone()
-        print(result)
         cur.close()
 
         self.titleEdit.setText(result[1])
@@ -75,11 +75,11 @@ class Update(QDialog):
         self.accept()
 
 
-class Main(QWidget):
+class Main(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
-        uic.loadUi("main.ui", self)
-        self.con = sqlite3.connect("coffee.sqlite")
+        self.setupUi(self)
+        self.con = sqlite3.connect("data/coffee.sqlite")
         self.setWindowTitle('Эспрессо')
 
         self.fill_work_table()
